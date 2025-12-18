@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest()
 @WireMockTest(httpPort = 8089)
 class GithubServiceTest {
@@ -32,7 +33,6 @@ class GithubServiceTest {
         String responseBody = IOUtils.resourceToString("/wiremock/correct-response.json",
                 StandardCharsets.UTF_8);
 
-        List<Response.BranchInfo> branches = List.of(new Response.BranchInfo("main","541f17c609f484af93445fec0d86b1907aaac15f"));
         stubFor(get(urlEqualTo("/users/dawid101/repos"))
                 .willReturn(
                         aResponse()
@@ -43,12 +43,12 @@ class GithubServiceTest {
         );
 
         //when
-        Response response = new Response("cinema-reservation-app","Dawid101",branches);
+        List<Response> response = githubService.getRepositories("dawid101");
 
         //then
-        assertAll(() ->{
-                assertEquals("cinema-reservation-app", response.name());
-                assertEquals("Dawid101", response.ownerLogin());
+        assertAll(() -> {
+            assertEquals("cinema-reservation-app", response.get(0).name());
+            assertEquals("Dawid101", response.get(0).ownerLogin());
         });
     }
 }
