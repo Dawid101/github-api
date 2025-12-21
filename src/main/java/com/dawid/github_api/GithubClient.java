@@ -6,7 +6,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 
 import java.util.List;
 
-@HttpExchange("https://api.github.com")
+@HttpExchange
 public interface GithubClient {
 
     @GetExchange("/users/{username}/repos")
