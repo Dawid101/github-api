@@ -2,7 +2,7 @@ package com.dawid.github_api;
 
 import java.util.List;
 
-record RepositoryResp(
+public record RepositoryResp(
         String name,
         String ownerLogin,
         List<BranchInfo> branches
