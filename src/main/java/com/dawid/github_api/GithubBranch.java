@@ -1,6 +1,6 @@
 package com.dawid.github_api;
 
-public record Branch(
+record GithubBranch(
         String name,
         Commit commit
 ) {

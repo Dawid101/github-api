@@ -7,13 +7,13 @@ import org.springframework.web.service.annotation.HttpExchange;
 import java.util.List;
 
 @HttpExchange
-public interface GithubClient {
+interface GithubClient {
 
     @GetExchange("/users/{username}/repos")
-    public List<GithubRepository> getAllRepos(@PathVariable String username);
+    List<GithubRepository> getAllRepos(@PathVariable String username);
 
     @GetExchange("/repos/{username}/{repoName}/branches")
-    List<Branch> getAllBranches(
+    List<GithubBranch> getAllBranches(
             @PathVariable String username,
             @PathVariable String repoName
     );

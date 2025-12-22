@@ -8,12 +8,12 @@ import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
-public class HttpClientConfig {
+class GithubClientConfig {
     @Value("${github.api.base-url:https://api.github.com}")
     private String githubApiBaseUrl;
 
     @Bean
-    public GithubClient githubClient() {
+    GithubClient githubClient() {
         RestClient restClient = RestClient.builder()
                 .baseUrl(githubApiBaseUrl)
                 .build();

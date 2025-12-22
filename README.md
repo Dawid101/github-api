@@ -1,24 +1,31 @@
-# GitHub API Client (Spring Boot)
+# GitHub API Client
 
 Prosta aplikacja w **Spring Boot**, która pobiera listę repozytoriów z zewnętrznego API dla wskazanego użytkownika i zwraca je w formacie JSON.
 
-## 🚀 Funkcjonalność
+## Wymagania
 
-- Pobieranie repozytoriów użytkownika przez REST API
-- Wykorzystanie Spring Boot do obsługi HTTP i komunikacji z API
-- Zwracanie danych w formacie JSON
+- Java 25
+- Maven 3.9+
 
+## Uruchamianie aplikacji
 
-## 📍 Endpoint
+```bash
+./mvnw spring-boot:run
+```
+Aplikacja wystartuje na porcie 8080.
+
+## Endpoint
 
 **GET** `/api/{username}/repos`
+
+Zwróci wszystkie repozytoria użytkownika, które nie są forkami.
 
 Przykład:
 
 GET /api/dawid101/repos
 
 
-Odpowiedź:
+Odpowiedź (200 OK):
 ```json
 [
     {
@@ -43,3 +50,19 @@ Odpowiedź:
     }
 ]
 ```
+
+Uzytkownik nie znaleziony (404 Not Found):
+```json
+{
+    "status": 404,
+    "message": "Not Found"
+}
+```
+
+## Użyte technologie
+
+- Java 25
+- Spring Boot 4.0
+- Spring Web MVC
+- RestClient with HttpExchange
+- WireMock (integration tests)

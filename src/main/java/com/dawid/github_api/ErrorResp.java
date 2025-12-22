@@ -1,6 +1,6 @@
 package com.dawid.github_api;
 
-public record ErrorResp(
+record ErrorResp(
         int status,
         String message
 ) {
