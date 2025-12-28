@@ -13,6 +13,7 @@ class GithubService {
     List<RepositoryResp> getUserRepositories(String username) {
         return githubClient.getAllRepos(username).stream()
                 .filter(repo -> !repo.fork())
+                .parallel()
                 .map(repo -> toRepositoryResponse(username,repo))
                 .toList();
     }

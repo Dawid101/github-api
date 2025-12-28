@@ -121,7 +121,7 @@ class GithubApiIntegrationTest {
 
         long totalTime = stopWatch.getTime();
         log.info("time " + totalTime);
-        assertThat(totalTime).isGreaterThanOrEqualTo(3000).isLessThanOrEqualTo(3500);
+        assertThat(totalTime).isGreaterThanOrEqualTo(2000).isLessThanOrEqualTo(2500);
 
     }
 
