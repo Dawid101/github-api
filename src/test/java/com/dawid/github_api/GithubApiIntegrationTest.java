@@ -51,6 +51,7 @@ class GithubApiIntegrationTest {
                 .willReturn(okJson("""
                         [
                             {"name": "my-repo", "owner": {"login": "testuser"}, "fork": false},
+                            {"name": "my-repo2", "owner": {"login": "testuser"}, "fork": false},
                             {"name": "forked-repo", "owner": {"login": "testuser"}, "fork": true}
                         ]
                         """)
@@ -62,6 +63,15 @@ class GithubApiIntegrationTest {
                             {"name": "main", "commit": {"sha": "abc123"}},
                             {"name": "develop", "commit": {"sha": "def456"}},
                             {"name": "feature", "commit": {"sha": "ghi789"}}
+                        ]
+                        """)
+                        .withFixedDelay(1000)));
+        stubFor(get(urlEqualTo("/repos/testuser/my-repo2/branches"))
+                .willReturn(okJson("""
+                        [
+                            {"name": "main", "commit": {"sha": "ikl876"}},
+                            {"name": "develop", "commit": {"sha": "xyz567"}},
+                            {"name": "feature", "commit": {"sha": "jkl123"}}
                         ]
                         """)
                         .withFixedDelay(1000)));
@@ -78,7 +88,7 @@ class GithubApiIntegrationTest {
         stopWatch.stop();
 
         //then
-        assertThat(response).hasSize(1);
+        assertThat(response).hasSize(2);
 
         RepositoryResp repo = response.getFirst();
         assertThat(repo.name()).isEqualTo("my-repo");
@@ -88,14 +98,30 @@ class GithubApiIntegrationTest {
         assertThat(repo.branches().get(0).sha()).isEqualTo("abc123");
         assertThat(repo.branches().get(1).name()).isEqualTo("develop");
         assertThat(repo.branches().get(1).sha()).isEqualTo("def456");
+        assertThat(repo.branches().get(2).name()).isEqualTo("feature");
+        assertThat(repo.branches().get(2).sha()).isEqualTo("ghi789");
+
+        RepositoryResp repo2 = response.get(1);
+        assertThat(repo2.name()).isEqualTo("my-repo2");
+        assertThat(repo2.ownerLogin()).isEqualTo("testuser");
+        assertThat(repo2.branches()).hasSize(3);
+        assertThat(repo2.branches().get(0).name()).isEqualTo("main");
+        assertThat(repo2.branches().get(0).sha()).isEqualTo("ikl876");
+        assertThat(repo2.branches().get(1).name()).isEqualTo("develop");
+        assertThat(repo2.branches().get(1).sha()).isEqualTo("xyz567");
+        assertThat(repo2.branches().get(2).name()).isEqualTo("feature");
+        assertThat(repo2.branches().get(2).sha()).isEqualTo("jkl123");
+
 
         verify(exactly(1), getRequestedFor(urlEqualTo("/users/testuser/repos")));
         verify(exactly(1), getRequestedFor(urlEqualTo("/repos/testuser/my-repo/branches")));
+        verify(exactly(1), getRequestedFor(urlEqualTo("/repos/testuser/my-repo2/branches")));
         verify(exactly(0), getRequestedFor(urlEqualTo("/repos/testuser/forked-repo/branches")));
-        verify(exactly(2), getRequestedFor(urlMatching(".*")));
+        verify(exactly(3), getRequestedFor(urlMatching(".*")));
 
         long totalTime = stopWatch.getTime();
-        assertThat(totalTime).isGreaterThanOrEqualTo(2000).isLessThanOrEqualTo(3000);
+        log.info("time " + totalTime);
+        assertThat(totalTime).isGreaterThanOrEqualTo(3000).isLessThanOrEqualTo(3500);
 
     }
 
